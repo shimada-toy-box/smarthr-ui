@@ -41,7 +41,16 @@ export const Calendar = forwardRef<HTMLElement, Props>(({ from, to, onSelectDate
         <YearMonth>
           {currentMonth.year()}年{currentMonth.month() + 1}月
         </YearMonth>
-        <SecondaryButton onClick={() => setIsSelectingYear(!isSelectingYear)} size="s" square>
+        <SecondaryButton
+          onClick={() => {
+            requestAnimationFrame(() => {
+              // delay updating state to be able to follow parent element with DatePicker
+              setIsSelectingYear(!isSelectingYear)
+            })
+          }}
+          size="s"
+          square
+        >
           <Icon size={13} name={isSelectingYear ? 'fa-caret-up' : 'fa-caret-down'} />
         </SecondaryButton>
         <MonthButtonLayout>
@@ -72,7 +81,10 @@ export const Calendar = forwardRef<HTMLElement, Props>(({ from, to, onSelectDate
               selectedYear={value?.getFullYear()}
               onSelectYear={(year) => {
                 setCurrentMonth(currentMonth.year(year))
-                setIsSelectingYear(false)
+                requestAnimationFrame(() => {
+                  // delay updating state to be able to follow parent element with DatePicker
+                  setIsSelectingYear(false)
+                })
               }}
             />
           </YearOverlay>
